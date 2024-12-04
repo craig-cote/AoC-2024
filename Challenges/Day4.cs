@@ -1,7 +1,6 @@
 using NUnit.Framework.Internal;
-using System.Diagnostics.Metrics;
 
-namespace TestProject1
+namespace Challenges
 {
 	public class Day4
 	{
@@ -64,7 +63,7 @@ namespace TestProject1
 			{
 				for (int row = 0; row < data.Length; ++row)
 				{
-					grid[column,row] = data[row][column]; // The reference of a multi-dimension array in the debugger is reversed so I'm aligning the data to make it easier to grok
+					grid[column,row] = data[row][column]; // The reference of a multi-dimensional array in the debugger is reversed so I'm aligning the data to make it easier to grok
 				}
 			}
 		}

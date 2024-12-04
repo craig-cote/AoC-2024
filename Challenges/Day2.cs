@@ -1,7 +1,6 @@
 using NUnit.Framework.Internal;
-using System.Runtime.CompilerServices;
 
-namespace TestProject1
+namespace Challenges
 {
 	public class Day2
 	{

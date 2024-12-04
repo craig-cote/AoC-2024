@@ -2,7 +2,7 @@ using NUnit.Framework.Internal;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace TestProject1
+namespace Challenges
 {
 	public class Day3
 	{

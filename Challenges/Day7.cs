@@ -1,6 +1,6 @@
 using NUnit.Framework.Internal;
 
-namespace TestProject1
+namespace Challenges
 {
 	public class Day7
 	{
