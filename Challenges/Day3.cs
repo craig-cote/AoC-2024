@@ -1,4 +1,3 @@
-using NUnit.Framework.Internal;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -13,12 +12,13 @@ namespace Challenges
 		private const string regexPattern = @"mul\(\d{1,3},\d{1,3}\)";
 		private const string numberPattern = @"\d{1,3}";
 
-		[Test]
-		public void QuestionA()
+		[TestCase(Example1, 161)]
+		[TestCase(Data, 170068701)]
+		public void QuestionA(string data, int expected)
 		{
 			int totalProduct = 0;
 
-			var multiplications = Regex.Matches(Data, regexPattern);
+			var multiplications = Regex.Matches(data, regexPattern);
 			foreach (var multiplication in multiplications)
 			{
 				var numbers = Regex.Matches(multiplication.ToString(), numberPattern);
@@ -28,10 +28,12 @@ namespace Challenges
 			}
 
 			Console.WriteLine(totalProduct);
+			Assert.That(totalProduct, Is.EqualTo(expected));
 		}
 
-		[Test]
-		public void QuestionB()
+		[TestCase(Example2, 48)]
+		[TestCase(Data, 78683433)]
+		public void QuestionB(string data, int expected)
 		{
 			const string DONT = "don't";
 			const string DO = "do";
@@ -40,7 +42,7 @@ namespace Challenges
 
 			StringBuilder goodString = new();
 
-			var donts = Data.Split(DONT);
+			var donts = data.Split(DONT);
 			goodString.Append(donts[0]);
 			for (int i = 1; i < donts.Length; i++)
 			{
@@ -61,6 +63,7 @@ namespace Challenges
 			}
 
 			Console.WriteLine(totalProduct);
+			Assert.That(totalProduct, Is.EqualTo(expected));
 		}
 	}
 }
