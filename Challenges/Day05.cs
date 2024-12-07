@@ -6,7 +6,7 @@ namespace Challenges
 	// A Solved: 10:15pm
 	// B solved: 11:00pm
 
-	public class Day5
+	public class Day05
 	{
 		private const int ZERO_INDEX_OFFSET = -1;
 		private const string ExampleRules = "47|53\r\n97|13\r\n97|61\r\n97|47\r\n75|29\r\n61|13\r\n75|53\r\n29|13\r\n97|29\r\n53|29\r\n61|53\r\n97|53\r\n61|29\r\n47|13\r\n75|47\r\n97|75\r\n47|61\r\n75|61\r\n47|29\r\n75|13\r\n53|13";

@@ -4,7 +4,7 @@ namespace Challenges
 	// A Solved: 00:00pm
 	// B solved: 00:00pm
 
-	public class Day7
+	public class Day07
 	{
 		private const string Example = "";
 		private const string Data = "";

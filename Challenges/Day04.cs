@@ -1,6 +1,6 @@
 namespace Challenges
 {
-	public class Day4
+	public class Day04
 	{
 		private const int ZERO_INDEX_OFFSET = 1;
 
