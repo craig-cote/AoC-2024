@@ -40,13 +40,10 @@ namespace Challenges
 
 			int solution = 0;
 
-			string[] rows = data.Split("\r\n");
-			char[,] grid = InitializeGrid(rows);
-			PopulateGrid(grid, rows);
+			var grid = GenerateNewPopulatedGrid(data);
 
 			Direction startingDirection = Direction.N;
-			List<Tuple<int, int, Direction>> happyPath = [];
-			PredictPathHavingNoInfiniteLoop(grid, startX, startY, startingDirection, happyPath);
+			MarkPath(grid, startX, startY, startingDirection);
 			foreach (var element in grid)
 			{
 				if (element == ENROUTE)
@@ -78,47 +75,13 @@ namespace Challenges
 			}
 		}
 
-		[TestCase(Example, 5, 7, 6)]
-		[TestCase(Data, 97, 42, 0)] // 921 is too low, 2002 is too high!
-		public void QuestionB(string data, int startX, int startY, int expected)
-		{
-			int solution = 0;
-
-			string[] rows = data.Split("\r\n");
-			char[,] grid = InitializeGrid(rows);
-			PopulateGrid(grid, rows);
-
-			Direction startingDirection = Direction.N;
-			List<Tuple<int, int, Direction>> happyPath = [];
-
-
-			PredictPathHavingNoInfiniteLoop(grid, startX, startY, startingDirection, happyPath);
-			happyPath.RemoveAt(happyPath.Count - 1); // if we hit the final point, it's too late -- and the "next" point will exceed the dimensions of the array
-
-			// now that we know the path, we need to see if putting an obstacle on any of these positions results in an infinite loop
-			// where an infinite loop can be defined as when the guard returns to a position he's already been and ends up heading
-			// in the same direction
-			for (int i = 0; i < happyPath.Count; ++i)
-			{
-				PopulateGrid(grid, rows);
-				if (DetermineIfNewObstacleAtNextElementOnPathCausesAnInfiniteLoop(grid, happyPath[i], startX, startY))
-				{
-					++solution;
-				}
-			}
-
-			Console.WriteLine(solution);
-			Assert.That(solution, Is.EqualTo(expected));
-		}
-
-		private static bool PredictPathHavingNoInfiniteLoop(char[,] grid, int x, int y, Direction direction, List<Tuple<int, int, Direction>> happyPath)
+		private static void MarkPath(char[,] grid, int x, int y, Direction direction)
 		{
 			int newX = x;
 			int newY = y;
 			Direction newDirection = direction;
 
 			grid[newY + ZERO_OFFSET, newX + ZERO_OFFSET] = ENROUTE;
-			happyPath.Add(new Tuple<int, int, Direction>(x, y, direction));
 			//Console.WriteLine("{0},{1}", newX, newY);
 
 			switch (direction)
@@ -127,114 +90,232 @@ namespace Challenges
 					--newY;
 					if (newY == 0) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
 					{
-						return true;
+						return;
 					}
 
 					if (grid[newY + ZERO_OFFSET, newX + ZERO_OFFSET] == OBSTACLE)
 					{
 						++newY;
 						newDirection = Direction.E;
-						//Console.WriteLine("Turn E at {0},{1}", newX, newY);
+						Console.WriteLine("Turn E at {0},{1}", newX, newY);
 					}
 					break;
 				case Direction.E:
 					++newX;
 					if (newX > grid.GetLength(0)) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
 					{
-						return true;
+						return;
 					}
 
 					if (grid[newY + ZERO_OFFSET, newX + ZERO_OFFSET] == OBSTACLE)
 					{
 						--newX;
 						newDirection = Direction.S;
-						//Console.WriteLine("Turn S at {0},{1}", newX, newY);
+						Console.WriteLine("Turn S at {0},{1}", newX, newY);
 					}
 					break;
 				case Direction.S:
 					++newY;
 					if (newY > grid.GetLength(1)) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
 					{
-						return true;
+						return;
 					}
 
 					if (grid[newY + ZERO_OFFSET, newX + ZERO_OFFSET] == OBSTACLE)
 					{
 						--newY;
 						newDirection = Direction.W;
-						//Console.WriteLine("Turn W at {0},{1}", newX, newY);
+						Console.WriteLine("Turn W at {0},{1}", newX, newY);
 					}
 					break;
 				case Direction.W:
 					--newX;
 					if (newX == 0) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
 					{
-						return true;
+						return;
 					}
 
 					if (grid[newY + ZERO_OFFSET, newX + ZERO_OFFSET] == OBSTACLE)
 					{
 						++newX;
 						newDirection = Direction.N;
-						//Console.WriteLine("Turn N at {0},{1}", newX, newY);
+						Console.WriteLine("Turn N at {0},{1}", newX, newY);
 					}
 					break;
 			}
 
-			var newVector = new Tuple<int, int, Direction>(newX, newY, newDirection);
-			if (happyPath.Contains(newVector))
-			{
-				return false; // The next location+direction has already been encountered, meaning that this is going to be an infinite loop
-			}
-
-			return PredictPathHavingNoInfiniteLoop(grid, newX, newY, newDirection, happyPath);
+			MarkPath(grid, newX, newY, newDirection);
 		}
 
-		private static bool DetermineIfNewObstacleAtNextElementOnPathCausesAnInfiniteLoop(char[,] grid, Tuple<int, int, Direction> vector, int originalX, int originalY)
+		[TestCase(Example, 5, 7, 6)]
+		[TestCase(Data, 97, 42, 0)] // 921 is too low, 2002 is too high!
+		public void QuestionB(string data, int startX, int startY, int expected)
 		{
-			List<Tuple<int, int, Direction>> path = [];
+			// Note: full brute-force method took forever to run on this laptop!
+			int solution = 0;
 
-			// does putting an obstacle immediately ahead of the current vector result in an infinite loop?
-			int newObstacleX = vector.Item1;
-			int newObstacleY = vector.Item2;
+			var grid = GenerateNewPopulatedGrid(data);
 
-			switch(vector.Item3)
-			{
-				case Direction.N:
-					--newObstacleY;
-					break;
-				case Direction.E:
-					++newObstacleX;
-					break;
-				case Direction.S:
-					++newObstacleY;
-					break;
-				case Direction.W:
-					--newObstacleX;
-					break;
-			}
+			Direction startingDirection = Direction.N;
 
+			MarkPath(grid, startX, startY, startingDirection);
 
-			if ((newObstacleY == originalY) && (newObstacleX  == originalX)) // this is the original location, and you *can't* put an obstacle here ever
-			{
-				return false;
-			}
+			// Partial brute-force method
+			// For each infinite loop created, the obstacle that is added has to be adjacent to the path
+			// So... figure out a list of just those coordinates, add them to the path coordinates,
+			// and then take the superset or coordinates and count how many result in an infiinite loop.
 
-			if (grid[newObstacleY + ZERO_OFFSET, newObstacleX + ZERO_OFFSET] == OBSTACLE)
-			{
-				return false;
-			}
+			// now that we know the path, we need to see if putting an obstacle on any of these positions results in an infinite loop
+			// where an infinite loop can be defined as when the guard returns to a position he's already been and ends up heading
+			// in the same direction
+			//for (int i = 0; i < happyPath.Count; ++i)
+			//{
+				//PopulateGrid(grid, rows);
+				//if (DetermineIfNewObstacleAtNextElementOnPathCausesAnInfiniteLoop(grid, happyPath[i], startX, startY))
+				//{
+				//	++solution;
+				//}
+			//}
 
-			grid[newObstacleY + ZERO_OFFSET, newObstacleX + ZERO_OFFSET] = OBSTACLE; // Add the new obstacle
-
-			// Determine if the grid is now an infinite loop
-			var infinite = !PredictPathHavingNoInfiniteLoop(grid, vector.Item1, vector.Item2, vector.Item3, path); // returns false if it is an infinite loop, but we think of that is true!
-			if (infinite)
-			{
-				Console.WriteLine("Obstacle placed at: x={0} y={1}", newObstacleX, newObstacleY);
-			}
-
-			return infinite;
+			Console.WriteLine(solution);
+			Assert.That(solution, Is.EqualTo(expected));
 		}
+
+		private static char[,] GenerateNewPopulatedGrid(string data)
+		{
+			string[] rows = data.Split("\r\n");
+			char[,] grid = InitializeGrid(rows);
+			PopulateGrid(grid, rows);
+
+			return grid;
+		}
+
+		//private static Tuple<bool, List<Tuple<int, int, Direction>>> PredictPathHavingNoInfiniteLoop(char[,] grid, int x, int y, Direction direction)
+		//{
+		//	List<Tuple<int, int, Direction>> happyPath = [];
+
+		//	int newX = x;
+		//	int newY = y;
+		//	Direction newDirection = direction;
+
+		//	grid[newY + ZERO_OFFSET, newX + ZERO_OFFSET] = ENROUTE;
+		//	happyPath.Add(new Tuple<int, int, Direction>(x, y, direction));
+		//	//Console.WriteLine("{0},{1}", newX, newY);
+
+		//	switch (direction)
+		//	{
+		//		case Direction.N:
+		//			--newY;
+		//			if (newY == 0) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
+		//			{
+		//				return true;
+		//			}
+
+		//			if (grid[newY + ZERO_OFFSET, newX + ZERO_OFFSET] == OBSTACLE)
+		//			{
+		//				++newY;
+		//				newDirection = Direction.E;
+		//				//Console.WriteLine("Turn E at {0},{1}", newX, newY);
+		//			}
+		//			break;
+		//		case Direction.E:
+		//			++newX;
+		//			if (newX > grid.GetLength(0)) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
+		//			{
+		//				return true;
+		//			}
+
+		//			if (grid[newY + ZERO_OFFSET, newX + ZERO_OFFSET] == OBSTACLE)
+		//			{
+		//				--newX;
+		//				newDirection = Direction.S;
+		//				//Console.WriteLine("Turn S at {0},{1}", newX, newY);
+		//			}
+		//			break;
+		//		case Direction.S:
+		//			++newY;
+		//			if (newY > grid.GetLength(1)) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
+		//			{
+		//				return true;
+		//			}
+
+		//			if (grid[newY + ZERO_OFFSET, newX + ZERO_OFFSET] == OBSTACLE)
+		//			{
+		//				--newY;
+		//				newDirection = Direction.W;
+		//				//Console.WriteLine("Turn W at {0},{1}", newX, newY);
+		//			}
+		//			break;
+		//		case Direction.W:
+		//			--newX;
+		//			if (newX == 0) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
+		//			{
+		//				return true;
+		//			}
+
+		//			if (grid[newY + ZERO_OFFSET, newX + ZERO_OFFSET] == OBSTACLE)
+		//			{
+		//				++newX;
+		//				newDirection = Direction.N;
+		//				//Console.WriteLine("Turn N at {0},{1}", newX, newY);
+		//			}
+		//			break;
+		//	}
+
+		//	var newVector = new Tuple<int, int, Direction>(newX, newY, newDirection);
+		//	if (happyPath.Contains(newVector))
+		//	{
+		//		return false; // The next location+direction has already been encountered, meaning that this is going to be an infinite loop
+		//	}
+
+		//	return PredictPathHavingNoInfiniteLoop(grid, newX, newY, newDirection, happyPath);
+		//}
+
+		//private static bool DetermineIfNewObstacleAtNextElementOnPathCausesAnInfiniteLoop(char[,] grid, Tuple<int, int, Direction> vector, int originalX, int originalY)
+		//{
+		//	List<Tuple<int, int, Direction>> path = [];
+
+		//	// does putting an obstacle immediately ahead of the current vector result in an infinite loop?
+		//	int newObstacleX = vector.Item1;
+		//	int newObstacleY = vector.Item2;
+
+		//	switch(vector.Item3)
+		//	{
+		//		case Direction.N:
+		//			--newObstacleY;
+		//			break;
+		//		case Direction.E:
+		//			++newObstacleX;
+		//			break;
+		//		case Direction.S:
+		//			++newObstacleY;
+		//			break;
+		//		case Direction.W:
+		//			--newObstacleX;
+		//			break;
+		//	}
+
+
+		//	if ((newObstacleY == originalY) && (newObstacleX  == originalX)) // this is the original location, and you *can't* put an obstacle here ever
+		//	{
+		//		return false;
+		//	}
+
+		//	if (grid[newObstacleY + ZERO_OFFSET, newObstacleX + ZERO_OFFSET] == OBSTACLE)
+		//	{
+		//		return false;
+		//	}
+
+		//	grid[newObstacleY + ZERO_OFFSET, newObstacleX + ZERO_OFFSET] = OBSTACLE; // Add the new obstacle
+
+		//	// Determine if the grid is now an infinite loop
+		//	var infinite = !PredictPathHavingNoInfiniteLoop(grid, vector.Item1, vector.Item2, vector.Item3, path); // returns false if it is an infinite loop, but we think of that is true!
+		//	if (infinite)
+		//	{
+		//		Console.WriteLine("Obstacle placed at: x={0} y={1}", newObstacleX, newObstacleY);
+		//	}
+
+		//	return infinite;
+		//}
 	}
 }
