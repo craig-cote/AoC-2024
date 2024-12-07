@@ -11,6 +11,7 @@ namespace Challenges
 
 		[TestCase(Example, 0)]
 		[TestCase(Data, 0), Ignore("Waiting for Example to pass before testing with puzzle input.")]
+		[Parallelizable]
 		public void QuestionA(string data, int expected)
 		{
 			int solution = 0;
@@ -27,6 +28,7 @@ namespace Challenges
 
 		[TestCase(Example, 0)]
 		[TestCase(Data, 0), Ignore("Waiting for Example to pass before testing with puzzle input.")]
+		[Parallelizable]
 		public void QuestionB(string data, int expected)
 		{
 			int solution = 0;
