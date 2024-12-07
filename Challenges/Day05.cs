@@ -23,6 +23,7 @@ namespace Challenges
 
 		[TestCase(ExampleRules, ExampleUpdates, 143)]
 		[TestCase(Rules, Updates, 7307)]
+		[Parallelizable]
 		public void QuestionA(string qRules, string qUpdates, int expected)
 		{
 			// Parse the rules and put them into a hashtable
@@ -158,6 +159,7 @@ namespace Challenges
 
 		[TestCase(ExampleRules, ExampleUpdates, 123)]
 		[TestCase(Rules, Updates, 4713)]
+		[Parallelizable]
 		public void QuestionB(string qRules, string qUpdates, int expected)
 		{
 			// Parse the rules and put them into a hashtable

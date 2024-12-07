@@ -9,6 +9,7 @@ namespace Challenges
 
 		[TestCase(Example, 11)]
 		[TestCase(Data, 936063)]
+		[Parallelizable]
 		public void QuestionA(string data, int expected)
 		{
 			// split IDs into couplets based upon \r\n
@@ -47,6 +48,7 @@ namespace Challenges
 		[Test]
 		[TestCase(Example, 31)]
 		[TestCase(Data, 23150395)]
+		[Parallelizable]
 		public void QuestionB(string data, int expected)
 		{
 			// split IDs into couplets based upon \r\n

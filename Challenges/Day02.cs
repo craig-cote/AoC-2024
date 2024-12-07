@@ -7,6 +7,7 @@ namespace Challenges
 
 		[TestCase(Example, 2)]
 		[TestCase(Data, 534)]
+		[Parallelizable]
 		public void QuestionA(string data, int expected)
 		{
 			List<bool> safe = [];
@@ -86,6 +87,7 @@ namespace Challenges
 
 		[TestCase(Example, 4)]
 		[TestCase(Data, 577)]
+		[Parallelizable]
 		public void QuestionB(string data, int expected)
 		{
 			List<bool> safe = [];

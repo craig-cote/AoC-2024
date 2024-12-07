@@ -19,6 +19,7 @@ namespace Challenges
 
 		[TestCase(Example1, 18)]
 		[TestCase(Data, 2434)]
+		[Parallelizable]
 		public void QuestionA(string data, int expected)
 		{
 			int matches = 0;
@@ -336,6 +337,7 @@ namespace Challenges
 		[TestCase(Example1, 9)]
 		[TestCase(Example2, 9)]
 		[TestCase(Data, 1835)]
+		[Parallelizable]
 		public void QuestionB(string data, int expected)
 		{
 			int matches = 0;

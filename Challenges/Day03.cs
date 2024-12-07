@@ -14,6 +14,7 @@ namespace Challenges
 
 		[TestCase(Example1, 161)]
 		[TestCase(Data, 170068701)]
+		[Parallelizable]
 		public void QuestionA(string data, int expected)
 		{
 			int totalProduct = 0;
@@ -33,6 +34,7 @@ namespace Challenges
 
 		[TestCase(Example2, 48)]
 		[TestCase(Data, 78683433)]
+		[Parallelizable]
 		public void QuestionB(string data, int expected)
 		{
 			const string DONT = "don't";
