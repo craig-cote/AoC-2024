@@ -1,5 +1,8 @@
 
+using System.IO;
 using System.Numerics;
+using System.Runtime.Intrinsics;
+using System.Xml.Linq;
 
 namespace Challenges
 {
@@ -58,6 +61,15 @@ namespace Challenges
 			Assert.That(solution, Is.EqualTo(expected));
 		}
 
+		private static char[,] GenerateNewPopulatedGrid(string data)
+		{
+			string[] rows = data.Split("\r\n");
+			char[,] grid = InitializeGrid(rows);
+			PopulateGrid(grid, rows);
+
+			return grid;
+		}
+
 		private static char[,] InitializeGrid(string[] data)
 		{
 			int rows = data.Length;
@@ -99,7 +111,7 @@ namespace Challenges
 					{
 						++newY;
 						newDirection = Direction.E;
-						Console.WriteLine("Turn E at {0},{1}", newX, newY);
+						//Console.WriteLine("Turn E at {0},{1}", newX, newY);
 					}
 					break;
 				case Direction.E:
@@ -113,7 +125,7 @@ namespace Challenges
 					{
 						--newX;
 						newDirection = Direction.S;
-						Console.WriteLine("Turn S at {0},{1}", newX, newY);
+						//Console.WriteLine("Turn S at {0},{1}", newX, newY);
 					}
 					break;
 				case Direction.S:
@@ -127,7 +139,7 @@ namespace Challenges
 					{
 						--newY;
 						newDirection = Direction.W;
-						Console.WriteLine("Turn W at {0},{1}", newX, newY);
+						//Console.WriteLine("Turn W at {0},{1}", newX, newY);
 					}
 					break;
 				case Direction.W:
@@ -141,7 +153,7 @@ namespace Challenges
 					{
 						++newX;
 						newDirection = Direction.N;
-						Console.WriteLine("Turn N at {0},{1}", newX, newY);
+						//Console.WriteLine("Turn N at {0},{1}", newX, newY);
 					}
 					break;
 			}
@@ -151,7 +163,6 @@ namespace Challenges
 
 		[TestCase(Example, 5, 7, 6)]
 		[TestCase(Data, 97, 42, 0)] // 921 is too low, 2002 is too high!
-		[Ignore("Becuase")]
 		public void QuestionB(string data, int startX, int startY, int expected)
 		{
 			// Note: full brute-force method took forever to run on this laptop!
@@ -161,6 +172,7 @@ namespace Challenges
 
 			var grid = GenerateNewPopulatedGrid(data);
 			MarkPath(grid, startX, startY, startingDirection);
+			grid[startY, startX] = START;
 
 			// Partial brute-force method
 			// For each infinite loop created, the obstacle that is added has to be adjacent to the path
@@ -171,24 +183,77 @@ namespace Challenges
 			// where an infinite loop can be defined as when the guard returns to a position he's already been and ends up heading
 			// in the same direction
 
+			HashSet<Tuple<int, int>> testedObstacleCoordinates = [];
+
 			for (int y = 0; y < grid.GetLength(0); y++)
 			{
 				for (int x = 0; x < grid.GetLength(1); x++)
 				{
-					var testGrid = GenerateNewPopulatedGrid(data);
-
-					switch (testGrid[y, x])
+					//Console.Write(grid[y, x] + " ");
+					if (grid[y, x] == ENROUTE)
 					{
-						case START:
-						case ENROUTE:
-							// generate a list of all non-obstacle, non-start coordinates that are adjacent to this position
-							break;
-						case OBSTACLE:
-						default:
-							// ignore these coordinates
-							break;
+						var referenceGrid = GenerateNewPopulatedGrid(data);
+						Array.Copy(grid, referenceGrid, grid.Length);
+
+						var obstaclesToTest = GenerateListOfPotentialObstacles(referenceGrid, x, y, startX, startY);
+						foreach (var obstacle in obstaclesToTest)
+						{
+							Console.Write(obstacle.Item1 + "," + obstacle.Item2 + "  ");
+						}
 					}
+					//	var referenceGrid = GenerateNewPopulatedGrid(data);
+					//	Array.Copy(grid, referenceGrid, grid.Length);
+
+					//	var obstaclesToTest = GenerateListOfPotentialObstacles(referenceGrid, x, y, startX, startY);
+					//	foreach (var obstacle in obstaclesToTest)
+					//	{
+					//		if (testedObstacleCoordinates.Contains(obstacle))
+					//		{
+					//			continue;
+					//		}
+
+
+					//		referenceGrid[obstacle.Item1, obstacle.Item2] = OBSTACLE;
+					//		List<Tuple<int, int, Direction>> happyPath = [];
+					//		if (!PredictPathHavingNoInfiniteLoop(referenceGrid, startX, startY, startingDirection, happyPath))
+					//		{
+					//			Console.WriteLine(obstacle.Item1 + " " + obstacle.Item2);
+					//			++solution;
+					//		}
+
+					//		testedObstacleCoordinates.Add(obstacle);
+					//	}
+					//}
+
+					//switch (referenceGrid[y, x])
+					//{
+					//	case START:
+					//	case ENROUTE:
+					//		// generate a list of all non-obstacle, non-start coordinates that are adjacent to this position
+					//		List<Tuple<int, int>> potentialObstacles = GenerateListOfPotentialObstacles(referenceGrid, x, y, startX, startY);
+					//		foreach (var potentialObstacle in potentialObstacles)
+					//		{
+					//			if (!testedObstacleCoordinates.Contains(potentialObstacle))
+					//			{
+					//				testedObstacleCoordinates.Add(potentialObstacle);
+					//				var testGrid = GenerateNewPopulatedGrid(data);
+					//				testGrid[y + ZERO_OFFSET, x + ZERO_OFFSET] = OBSTACLE;
+
+					//				List<Tuple<int, int, Direction>> happyPath = [];
+					//				if (!PredictPathHavingNoInfiniteLoop(testGrid, startX, startY, startingDirection, happyPath))
+					//				{
+					//					++solution;
+					//				}
+					//			}
+					//		}
+					//		break;
+					//	case OBSTACLE:
+					//	default:
+					//		// ignore these coordinates
+					//		break;
 				}
+
+				Console.WriteLine();
 			}
 
 			//for (int i = 0; i < happyPath.Count; ++i)
@@ -204,141 +269,131 @@ namespace Challenges
 			Assert.That(solution, Is.EqualTo(expected));
 		}
 
-		private static char[,] GenerateNewPopulatedGrid(string data)
+		private static List<Tuple<int, int>> GenerateListOfPotentialObstacles(char[,] testGrid, int x, int y, int startX, int startY)
 		{
-			string[] rows = data.Split("\r\n");
-			char[,] grid = InitializeGrid(rows);
-			PopulateGrid(grid, rows);
+			List<Tuple<int, int>> potentialObstacles = [];
 
-			return grid;
+			if ((y > 0) && (y < testGrid.GetLength(0) + ZERO_OFFSET))
+			{
+				AddCoordinatesIfValidSpotForAnObstacle(potentialObstacles, testGrid, x, y - 1);
+				AddCoordinatesIfValidSpotForAnObstacle(potentialObstacles, testGrid, x, y + 1);
+			}
+			else if (y > 0)
+			{
+				AddCoordinatesIfValidSpotForAnObstacle(potentialObstacles, testGrid, x, y - 1);
+			}
+			else if (y < testGrid.GetLength(0) + ZERO_OFFSET)
+			{
+				AddCoordinatesIfValidSpotForAnObstacle(potentialObstacles, testGrid, x, y + 1);
+			}
+
+			if ((x > 0) && (x < testGrid.GetLength(1) + ZERO_OFFSET))
+			{
+				AddCoordinatesIfValidSpotForAnObstacle(potentialObstacles, testGrid, x - 1, y);
+				AddCoordinatesIfValidSpotForAnObstacle(potentialObstacles, testGrid, x + 1, y);
+			}
+			else if (y > 0)
+			{
+				AddCoordinatesIfValidSpotForAnObstacle(potentialObstacles, testGrid, x - 1, y);
+			}
+			else if (y < testGrid.GetLength(1) + ZERO_OFFSET)
+			{
+				AddCoordinatesIfValidSpotForAnObstacle(potentialObstacles, testGrid, x + 1, y);
+			}
+
+			if (testGrid[y, x] != START)
+			{
+				potentialObstacles.Add(new Tuple<int, int>(y, x));
+			}
+
+			return potentialObstacles;
 		}
 
-		//private static Tuple<bool, List<Tuple<int, int, Direction>>> PredictPathHavingNoInfiniteLoop(char[,] grid, int x, int y, Direction direction)
-		//{
-		//	List<Tuple<int, int, Direction>> happyPath = [];
+		private static void AddCoordinatesIfValidSpotForAnObstacle(List<Tuple<int, int>> newObstacles, char[,] testGrid, int x, int y)
+		{
+			if ((testGrid[y, x] != OBSTACLE) && (testGrid[y, x] != ENROUTE) && (testGrid[y, x] != START))
+			{
+				newObstacles.Add(new Tuple<int, int>(y, x + 1));
+			}
+		}
 
-		//	int newX = x;
-		//	int newY = y;
-		//	Direction newDirection = direction;
+		private static bool PredictPathHavingNoInfiniteLoop(char[,] grid, int x, int y, Direction direction, List<Tuple<int, int, Direction>> happyPath)
+		{
+			int newX = x;
+			int newY = y;
+			Direction newDirection = direction;
 
-		//	grid[newY + ZERO_OFFSET, newX + ZERO_OFFSET] = ENROUTE;
-		//	happyPath.Add(new Tuple<int, int, Direction>(x, y, direction));
-		//	//Console.WriteLine("{0},{1}", newX, newY);
+			grid[newY + ZERO_OFFSET, newX + ZERO_OFFSET] = ENROUTE;
+			happyPath.Add(new Tuple<int, int, Direction>(x, y, direction));
+			//Console.WriteLine("{0},{1}", newX, newY);
 
-		//	switch (direction)
-		//	{
-		//		case Direction.N:
-		//			--newY;
-		//			if (newY == 0) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
-		//			{
-		//				return true;
-		//			}
+			switch (direction)
+			{
+				case Direction.N:
+					--newY;
+					if (newY == 0) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
+					{
+						return true;
+					}
 
-		//			if (grid[newY + ZERO_OFFSET, newX + ZERO_OFFSET] == OBSTACLE)
-		//			{
-		//				++newY;
-		//				newDirection = Direction.E;
-		//				//Console.WriteLine("Turn E at {0},{1}", newX, newY);
-		//			}
-		//			break;
-		//		case Direction.E:
-		//			++newX;
-		//			if (newX > grid.GetLength(0)) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
-		//			{
-		//				return true;
-		//			}
+					if (grid[newY + ZERO_OFFSET, newX + ZERO_OFFSET] == OBSTACLE)
+					{
+						++newY;
+						newDirection = Direction.E;
+						//Console.WriteLine("Turn E at {0},{1}", newX, newY);
+					}
+					break;
+				case Direction.E:
+					++newX;
+					if (newX > grid.GetLength(0)) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
+					{
+						return true;
+					}
 
-		//			if (grid[newY + ZERO_OFFSET, newX + ZERO_OFFSET] == OBSTACLE)
-		//			{
-		//				--newX;
-		//				newDirection = Direction.S;
-		//				//Console.WriteLine("Turn S at {0},{1}", newX, newY);
-		//			}
-		//			break;
-		//		case Direction.S:
-		//			++newY;
-		//			if (newY > grid.GetLength(1)) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
-		//			{
-		//				return true;
-		//			}
+					if (grid[newY + ZERO_OFFSET, newX + ZERO_OFFSET] == OBSTACLE)
+					{
+						--newX;
+						newDirection = Direction.S;
+						//Console.WriteLine("Turn S at {0},{1}", newX, newY);
+					}
+					break;
+				case Direction.S:
+					++newY;
+					if (newY > grid.GetLength(1)) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
+					{
+						return true;
+					}
 
-		//			if (grid[newY + ZERO_OFFSET, newX + ZERO_OFFSET] == OBSTACLE)
-		//			{
-		//				--newY;
-		//				newDirection = Direction.W;
-		//				//Console.WriteLine("Turn W at {0},{1}", newX, newY);
-		//			}
-		//			break;
-		//		case Direction.W:
-		//			--newX;
-		//			if (newX == 0) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
-		//			{
-		//				return true;
-		//			}
+					if (grid[newY + ZERO_OFFSET, newX + ZERO_OFFSET] == OBSTACLE)
+					{
+						--newY;
+						newDirection = Direction.W;
+						//Console.WriteLine("Turn W at {0},{1}", newX, newY);
+					}
+					break;
+				case Direction.W:
+					--newX;
+					if (newX == 0) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
+					{
+						return true;
+					}
 
-		//			if (grid[newY + ZERO_OFFSET, newX + ZERO_OFFSET] == OBSTACLE)
-		//			{
-		//				++newX;
-		//				newDirection = Direction.N;
-		//				//Console.WriteLine("Turn N at {0},{1}", newX, newY);
-		//			}
-		//			break;
-		//	}
+					if (grid[newY + ZERO_OFFSET, newX + ZERO_OFFSET] == OBSTACLE)
+					{
+						++newX;
+						newDirection = Direction.N;
+						//Console.WriteLine("Turn N at {0},{1}", newX, newY);
+					}
+					break;
+			}
 
-		//	var newVector = new Tuple<int, int, Direction>(newX, newY, newDirection);
-		//	if (happyPath.Contains(newVector))
-		//	{
-		//		return false; // The next location+direction has already been encountered, meaning that this is going to be an infinite loop
-		//	}
+			var newVector = new Tuple<int, int, Direction>(newX, newY, newDirection);
+			if (happyPath.Contains(newVector))
+			{
+				return false; // The next location+direction has already been encountered, meaning that this is going to be an infinite loop
+			}
 
-		//	return PredictPathHavingNoInfiniteLoop(grid, newX, newY, newDirection, happyPath);
-		//}
-
-		//private static bool DetermineIfNewObstacleAtNextElementOnPathCausesAnInfiniteLoop(char[,] grid, Tuple<int, int, Direction> vector, int originalX, int originalY)
-		//{
-		//	List<Tuple<int, int, Direction>> path = [];
-
-		//	// does putting an obstacle immediately ahead of the current vector result in an infinite loop?
-		//	int newObstacleX = vector.Item1;
-		//	int newObstacleY = vector.Item2;
-
-		//	switch(vector.Item3)
-		//	{
-		//		case Direction.N:
-		//			--newObstacleY;
-		//			break;
-		//		case Direction.E:
-		//			++newObstacleX;
-		//			break;
-		//		case Direction.S:
-		//			++newObstacleY;
-		//			break;
-		//		case Direction.W:
-		//			--newObstacleX;
-		//			break;
-		//	}
-
-
-		//	if ((newObstacleY == originalY) && (newObstacleX  == originalX)) // this is the original location, and you *can't* put an obstacle here ever
-		//	{
-		//		return false;
-		//	}
-
-		//	if (grid[newObstacleY + ZERO_OFFSET, newObstacleX + ZERO_OFFSET] == OBSTACLE)
-		//	{
-		//		return false;
-		//	}
-
-		//	grid[newObstacleY + ZERO_OFFSET, newObstacleX + ZERO_OFFSET] = OBSTACLE; // Add the new obstacle
-
-		//	// Determine if the grid is now an infinite loop
-		//	var infinite = !PredictPathHavingNoInfiniteLoop(grid, vector.Item1, vector.Item2, vector.Item3, path); // returns false if it is an infinite loop, but we think of that is true!
-		//	if (infinite)
-		//	{
-		//		Console.WriteLine("Obstacle placed at: x={0} y={1}", newObstacleX, newObstacleY);
-		//	}
-
-		//	return infinite;
-		//}
+			return PredictPathHavingNoInfiniteLoop(grid, newX, newY, newDirection, happyPath);
+		}
 	}
 }
