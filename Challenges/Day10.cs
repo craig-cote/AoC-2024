@@ -15,15 +15,55 @@ namespace Challenges
 		public void QuestionA(string data, int expected)
 		{
 			int solution = 0;
-			object parsedData = ParseData(data);
+
+			var grid = GenerateNewPopulatedGrid(data);
+			WriteGrid(grid);
 
 			Console.WriteLine(solution);
 			Assert.That(solution, Is.EqualTo(expected));
 		}
 
-		private static object ParseData(string data)
+		private static void WriteGrid(char[,] grid)
 		{
-			throw new NotImplementedException();
+			for (int y = 0; y < grid.GetLength(0); y++)
+			{
+				for (int x = 0; x < grid.GetLength(0); x++)
+				{
+					Console.Write(grid[y, x] + " ");
+				}
+
+				Console.WriteLine();
+			}
+
+			Console.WriteLine();
+		}
+
+		private static char[,] GenerateNewPopulatedGrid(string data)
+		{
+			string[] rows = data.Split("\r\n");
+			char[,] grid = InitializeGrid(rows);
+			PopulateGrid(grid, rows);
+
+			return grid;
+		}
+
+		private static char[,] InitializeGrid(string[] data)
+		{
+			int rows = data.Length;
+			int columns = data[0].Length;
+
+			return new char[columns, rows];
+		}
+
+		private static void PopulateGrid(char[,] grid, string[] data)
+		{
+			for (int y = 0; y < data.Length; ++y)
+			{
+				for (int x = 0; x < data[0].Length; ++x)
+				{
+					grid[y, x] = data[y][x];
+				}
+			}
 		}
 
 		[TestCase(Example, 0)]
@@ -32,7 +72,9 @@ namespace Challenges
 		public void QuestionB(string data, int expected)
 		{
 			int solution = 0;
-			object parsedData = ParseData(data);
+
+			var grid = GenerateNewPopulatedGrid(data);
+			WriteGrid(grid);
 
 			Console.WriteLine(solution);
 			Assert.That(solution, Is.EqualTo(expected));

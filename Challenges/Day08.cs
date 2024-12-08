@@ -5,39 +5,41 @@ namespace Challenges
 {
 	//    Start:  9:15pm
 	// A Solved: 11:05pm
-	// B solved: 00:00pm
+	// B solved: 11:30pm
 
 	public class Day08
 	{
-		private const string Example1 = "..........\r\n..........\r\n..........\r\n....a.....\r\n..........\r\n.....a....\r\n..........\r\n..........\r\n..........\r\n..........";
-		private const string Example2 = "..........\r\n..........\r\n..........\r\n....a.....\r\n........a.\r\n.....a....\r\n..........\r\n..........\r\n..........\r\n..........";
-		private const string Example3 = "..........\r\n..........\r\n..........\r\n....a.....\r\n........a.\r\n.....a....\r\n..........\r\n......A...\r\n..........\r\n..........";
-		private const string Example4 = "............\r\n........0...\r\n.....0......\r\n.......0....\r\n....0.......\r\n......A.....\r\n............\r\n............\r\n........A...\r\n.........A..\r\n............\r\n............";
-		private const string Example5 = "..........\r\n....a.....\r\n..........\r\n....a.....\r\n..........\r\n..........\r\n..........\r\n....a.....\r\n..........\r\n....a.....";
-		private const string Example6 = "a.........\r\n..........\r\n..a.......\r\n..........\r\n..........\r\n..........\r\n..........\r\n.......a..\r\n..........\r\n.........a";
-		private const string Example7 = "..........\r\n....a.....\r\n..........\r\n....a.....\r\n..........\r\n..........\r\n..........\r\n....A.....\r\n..........\r\n....A.....";
-		private const string Data = ".............C.7..................G..0...y........\r\n..................7................C..............\r\n....................................0......W....y.\r\n.......................................D..W.......\r\n..........u.......................................\r\n..................................4.......D0...j..\r\n.....................................D............\r\n................O.....C................G..........\r\n............F.....................C...............\r\n......u..........F.................4.......y......\r\n..........X..........5....4...........1...........\r\n..........F...........5X...................3......\r\n.............F.............................j.3....\r\n.................u..............X.................\r\n............................7.....................\r\n..................................................\r\n..........................5.....j2.........4......\r\n....d.....................y...................j1..\r\n..................................................\r\n............................Y.e...................\r\n.................d...X...............J...........e\r\n.............d....................................\r\n..............................Y..............1....\r\n.........................................Y........\r\n......................W......8..f...J.........3...\r\n.......w.............J............................\r\n...................................U.....f......e.\r\n.................................Of....e....t...1.\r\n.......g..........d......s........................\r\n................G................f................\r\n.....................................O............\r\n...g........................T.....U...............\r\n......................s..........T.............G..\r\n................................s.......8.........\r\n.....9........g...........o...U............E......\r\n............g............................t....o...\r\n...........................................6....E.\r\n.....................s......x........6....E.......\r\n..........w.9................x............t.......\r\n...........9........w...........J.....6o..........\r\n.............................................o....\r\n..........S................U......................\r\n.......S..2..........c........T.O....t............\r\n.....2...S.....c...................T..............\r\n..................x.......................8.......\r\n....9.............................................\r\n...wS.....................................6.......\r\n................2........................8........\r\n..................................................\r\n.................x....c........................E..";
+		private const string Problem1Example1 = "..........\r\n..........\r\n..........\r\n....a.....\r\n..........\r\n.....a....\r\n..........\r\n..........\r\n..........\r\n..........";
+		private const string Problem1Example2 = "..........\r\n..........\r\n..........\r\n....a.....\r\n........a.\r\n.....a....\r\n..........\r\n..........\r\n..........\r\n..........";
+		private const string Problem1Example3 = "..........\r\n..........\r\n..........\r\n....a.....\r\n........a.\r\n.....a....\r\n..........\r\n......A...\r\n..........\r\n..........";
+		private const string Problem1Example5 = "..........\r\n....a.....\r\n..........\r\n....a.....\r\n..........\r\n..........\r\n..........\r\n....a.....\r\n..........\r\n....a.....";
+		private const string Problem1Example6 = "a.........\r\n..........\r\n..a.......\r\n..........\r\n..........\r\n..........\r\n..........\r\n.......a..\r\n..........\r\n.........a";
+		private const string Problem1Example7 = "..........\r\n....a.....\r\n..........\r\n....a.....\r\n..........\r\n..........\r\n..........\r\n....A.....\r\n..........\r\n....A.....";
+
+		private const string Problem2Example1 = "T.........\r\n...T......\r\n.T........\r\n..........\r\n..........\r\n..........\r\n..........\r\n..........\r\n..........\r\n..........";
+
+		private const string CommonExample = "............\r\n........0...\r\n.....0......\r\n.......0....\r\n....0.......\r\n......A.....\r\n............\r\n............\r\n........A...\r\n.........A..\r\n............\r\n............";
+		private const string CommonData = ".............C.7..................G..0...y........\r\n..................7................C..............\r\n....................................0......W....y.\r\n.......................................D..W.......\r\n..........u.......................................\r\n..................................4.......D0...j..\r\n.....................................D............\r\n................O.....C................G..........\r\n............F.....................C...............\r\n......u..........F.................4.......y......\r\n..........X..........5....4...........1...........\r\n..........F...........5X...................3......\r\n.............F.............................j.3....\r\n.................u..............X.................\r\n............................7.....................\r\n..................................................\r\n..........................5.....j2.........4......\r\n....d.....................y...................j1..\r\n..................................................\r\n............................Y.e...................\r\n.................d...X...............J...........e\r\n.............d....................................\r\n..............................Y..............1....\r\n.........................................Y........\r\n......................W......8..f...J.........3...\r\n.......w.............J............................\r\n...................................U.....f......e.\r\n.................................Of....e....t...1.\r\n.......g..........d......s........................\r\n................G................f................\r\n.....................................O............\r\n...g........................T.....U...............\r\n......................s..........T.............G..\r\n................................s.......8.........\r\n.....9........g...........o...U............E......\r\n............g............................t....o...\r\n...........................................6....E.\r\n.....................s......x........6....E.......\r\n..........w.9................x............t.......\r\n...........9........w...........J.....6o..........\r\n.............................................o....\r\n..........S................U......................\r\n.......S..2..........c........T.O....t............\r\n.....2...S.....c...................T..............\r\n..................x.......................8.......\r\n....9.............................................\r\n...wS.....................................6.......\r\n................2........................8........\r\n..................................................\r\n.................x....c........................E..";
 
 		private const char EMPTY = '.';
 		private const char ANTINODE = '#';
-		private const int ZERO_OFFSET = -1;
 
 
-		[TestCase(Example1, 2)]
-		[TestCase(Example2, 4)]
-		[TestCase(Example3, 4)]
-		[TestCase(Example4, 14)]
-		[TestCase(Example5, 1)]
-		[TestCase(Example6, 2)]
-		[TestCase(Example7, 1)]
-		[TestCase(Data, 222)]
+		[TestCase(Problem1Example1, 2)]
+		[TestCase(Problem1Example2, 4)]
+		[TestCase(Problem1Example3, 4)]
+		[TestCase(CommonExample, 14)]
+		[TestCase(Problem1Example5, 1)]
+		[TestCase(Problem1Example6, 2)]
+		[TestCase(Problem1Example7, 1)]
+		[TestCase(CommonData, 222)]
 		[Parallelizable]
 		public void QuestionA(string data, int expected)
 		{
 			HashSet<Tuple<int, int>> uniqueAntinodes = [];
 
 			var grid = GenerateNewPopulatedGrid(data);
-			WriteGrid(grid);
+			//WriteGrid(grid);
 
 			var uniqueFrequences = ParseUniqueFrequencies(grid);
 
@@ -52,7 +54,7 @@ namespace Challenges
 			}
 
 			var antinodeGrid = GenerateAntinodeGrid(grid, 'a', new List<Tuple<int, int>>(), uniqueAntinodes);
-			WriteGrid(antinodeGrid);
+			//WriteGrid(antinodeGrid);
 
 			Console.WriteLine(uniqueAntinodes.Count);
 			Assert.That(uniqueAntinodes.Count, Is.EqualTo(expected));
@@ -231,17 +233,105 @@ namespace Challenges
 			return antinodes;
 		}
 
-		[TestCase(Example1, 0)]
-		[TestCase(Data, 0), Ignore("Waiting for Example to pass before testing with puzzle input.")]
+		[TestCase(Problem2Example1, 9)]
+		[TestCase(CommonExample, 34)]
+		[TestCase(CommonData, 884)]
 		[Parallelizable]
 		public void QuestionB(string data, int expected)
 		{
-			int solution = 0;
+			HashSet<Tuple<int, int>> uniqueAntinodes = [];
 
 			var grid = GenerateNewPopulatedGrid(data);
+			//WriteGrid(grid);
 
-			Console.WriteLine(solution);
-			Assert.That(solution, Is.EqualTo(expected));
+			var uniqueFrequences = ParseUniqueFrequencies(grid);
+
+			foreach (var frequency in uniqueFrequences)
+			{
+				var antennasForSpecificFrequency = ParseAntennas(grid, frequency);
+				var antinodes = DetermineAntinodesWithHarmonics(grid, antennasForSpecificFrequency);
+				foreach (var antinode in antinodes)
+				{
+					uniqueAntinodes.Add(antinode);
+				}
+			}
+
+			var antinodeGrid = GenerateAntinodeGrid(grid, 'a', new List<Tuple<int, int>>(), uniqueAntinodes);
+			//WriteGrid(antinodeGrid);
+
+			Console.WriteLine(uniqueAntinodes.Count);
+			Assert.That(uniqueAntinodes.Count, Is.EqualTo(expected));
+		}
+
+		private static HashSet<Tuple<int, int>> DetermineAntinodesWithHarmonics(char[,] grid, List<Tuple<int, int>> antennas)
+		{
+			const int OFFSET_FOR_SECOND_ANTENNA = -1;
+
+			HashSet<Tuple<int, int>> antinodes = [];
+
+			for (int indexOfAntenna1 = 0; indexOfAntenna1 < antennas.Count + OFFSET_FOR_SECOND_ANTENNA; indexOfAntenna1++)
+			{
+				for (int indexOfAntenna2 = indexOfAntenna1 + 1; indexOfAntenna2 <= antennas.Count + OFFSET_FOR_SECOND_ANTENNA; indexOfAntenna2++)
+				{
+					var validAntinodes = GetValidAntinodesForPairOfAntennasWithHarmonics(antennas[indexOfAntenna1], antennas[indexOfAntenna2], grid.GetLength(0), grid.GetLength(1));
+					foreach (var antinode in validAntinodes)
+					{
+						antinodes.Add(antinode);
+					}
+				}
+			}
+
+			return antinodes;
+		}
+
+		private static List<Tuple<int, int>> GetValidAntinodesForPairOfAntennasWithHarmonics(Tuple<int, int> antenna1, Tuple<int, int> antenna2, int maxY, int maxX)
+		{
+			const int REVERSE_DIRECITON = -1;
+
+			List<Tuple<int, int>> antinodes = [];
+			antinodes.Add(antenna1);
+			antinodes.Add(antenna2);
+
+			int yDifference = antenna1.Item1 - antenna2.Item1;
+			int xDifference = antenna1.Item2 - antenna2.Item2;
+
+			var antinodesSet = GenerateAntinodesForAntennna(antenna1, yDifference, xDifference, maxY, maxX);
+			foreach (var antinode in antinodesSet)
+			{
+				if ((antinode.Item1 >= 0) && (antinode.Item1 < maxY) && (antinode.Item2 >= 0) && (antinode.Item2 < maxX))
+				{
+					antinodes.Add(antinode);
+				}
+			}
+
+			antinodesSet = GenerateAntinodesForAntennna(antenna2, yDifference * REVERSE_DIRECITON, xDifference * REVERSE_DIRECITON, maxY, maxX);
+			foreach (var antinode in antinodesSet)
+			{
+				if ((antinode.Item1 >= 0) && (antinode.Item1 < maxY) && (antinode.Item2 >= 0) && (antinode.Item2 < maxX))
+				{
+					antinodes.Add(antinode);
+				}
+			}
+
+			return antinodes;
+		}
+
+		private static List<Tuple<int, int>> GenerateAntinodesForAntennna(Tuple<int, int> antenna1, int yDifference, int xDifference, int maxY, int maxX)
+		{
+			List<Tuple<int, int>> antinodesWithHarmonics = [];
+
+			var y = antenna1.Item1;
+			var x = antenna1.Item2;
+
+			while ((y > 0) && (y <  maxY) && (x > 0) && (x < maxX))
+			{
+				y += yDifference;
+				x += xDifference;
+
+				antinodesWithHarmonics.Add(new Tuple<int, int>(y, x));
+			}
+
+			return antinodesWithHarmonics;
 		}
 	}
 }
