@@ -5,13 +5,13 @@
 		public const int ZERO_INDEX_OFFSET = -1;
 		public const char EMPTY = '.';
 
-		public enum Ordinality
+		public enum TimeComparison
 		{
 			Before,
 			After
 		}
 
-		public enum Direction
+		public enum CardinalDirection
 		{
 			N,
 			E,

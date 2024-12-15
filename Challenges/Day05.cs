@@ -50,20 +50,20 @@ namespace Challenges
 				int element1 = Convert.ToInt32(ruleElements[0]);
 				int element2 = Convert.ToInt32(ruleElements[1]);
 
-				AddRule(rules, element1, Ordinality.Before, element2);
-				AddRule(rules, element2, Ordinality.After, element1);
+				AddRule(rules, element1, TimeComparison.Before, element2);
+				AddRule(rules, element2, TimeComparison.After, element1);
 			}
 			return rules;
 		}
 
-		private static void AddRule(Hashtable rules, int key, Ordinality ordinality, int page)
+		private static void AddRule(Hashtable rules, int key, TimeComparison ordinality, int page)
 		{
 			if (!rules.ContainsKey(key))
 			{
-				rules.Add(key, new Dictionary<int, Ordinality>());
+				rules.Add(key, new Dictionary<int, TimeComparison>());
 			}
 
-			Dictionary<int, Ordinality> pageRules = (Dictionary<int, Ordinality>)rules[key];
+			Dictionary<int, TimeComparison> pageRules = (Dictionary<int, TimeComparison>)rules[key];
 			if (!pageRules.ContainsKey(page))
 			{
 				pageRules.Add(page, ordinality);
@@ -99,7 +99,7 @@ namespace Challenges
 			{
 				if (rules.ContainsKey(page))
 				{
-					var pageRules = (Dictionary<int, Ordinality>)rules[page];
+					var pageRules = (Dictionary<int, TimeComparison>)rules[page];
 					foreach (var key in pageRules.Keys)
 					{
 						if (update.Contains(key))
@@ -107,10 +107,10 @@ namespace Challenges
 							var oridinality = pageRules[key];
 							switch (oridinality)
 							{
-								case Ordinality.Before:
+								case TimeComparison.Before:
 									isValid = IsPageBeforePage(update, page, key);
 									break;
-								case Ordinality.After:
+								case TimeComparison.After:
 									isValid = IsPageAfterPage(update, page, key);
 									break;
 							}
@@ -193,7 +193,7 @@ namespace Challenges
 
 				if (rules.ContainsKey(page))
 				{
-					var pageRules = (Dictionary<int, Ordinality>)rules[page];
+					var pageRules = (Dictionary<int, TimeComparison>)rules[page];
 					foreach (var key in pageRules.Keys)
 					{
 						if (update.Contains(key))
@@ -201,10 +201,10 @@ namespace Challenges
 							var oridinality = pageRules[key];
 							switch (oridinality)
 							{
-								case Ordinality.Before:
+								case TimeComparison.Before:
 									isValid = IsPageBeforePage(update, page, key);
 									break;
-								case Ordinality.After:
+								case TimeComparison.After:
 									isValid = IsPageAfterPage(update, page, key);
 									break;
 							}
@@ -227,7 +227,7 @@ namespace Challenges
 			return update;
 		}
 
-		private static int[] FixUpdatesPage(int[] update, int targetPage, Dictionary<int, Ordinality> pageRules, int relatedPage)
+		private static int[] FixUpdatesPage(int[] update, int targetPage, Dictionary<int, TimeComparison> pageRules, int relatedPage)
 		{
 			List<int> fixedUpdate = [];
 

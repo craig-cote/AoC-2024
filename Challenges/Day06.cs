@@ -38,7 +38,7 @@ namespace Challenges
 
 			var grid = GenerateNewPopulatedGrid(data);
 
-			Direction startingDirection = Direction.N;
+			CardinalDirection startingDirection = CardinalDirection.N;
 			MarkPath(grid, startX, startY, startingDirection);
 			foreach (var element in grid)
 			{
@@ -80,18 +80,18 @@ namespace Challenges
 			}
 		}
 
-		private static void MarkPath(char[,] grid, int x, int y, Direction direction)
+		private static void MarkPath(char[,] grid, int x, int y, CardinalDirection direction)
 		{
 			int newX = x;
 			int newY = y;
-			Direction newDirection = direction;
+			CardinalDirection newDirection = direction;
 
 			grid[newY + ZERO_INDEX_OFFSET, newX + ZERO_INDEX_OFFSET] = ENROUTE;
 			//Console.WriteLine("{0},{1}", newX, newY);
 
 			switch (direction)
 			{
-				case Direction.N:
+				case CardinalDirection.N:
 					--newY;
 					if (newY == 0) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
 					{
@@ -101,11 +101,11 @@ namespace Challenges
 					if (grid[newY + ZERO_INDEX_OFFSET, newX + ZERO_INDEX_OFFSET] == OBSTACLE)
 					{
 						++newY;
-						newDirection = Direction.E;
+						newDirection = CardinalDirection.E;
 						//Console.WriteLine("Turn E at {0},{1}", newX, newY);
 					}
 					break;
-				case Direction.E:
+				case CardinalDirection.E:
 					++newX;
 					if (newX > grid.GetLength(0)) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
 					{
@@ -115,11 +115,11 @@ namespace Challenges
 					if (grid[newY + ZERO_INDEX_OFFSET, newX + ZERO_INDEX_OFFSET] == OBSTACLE)
 					{
 						--newX;
-						newDirection = Direction.S;
+						newDirection = CardinalDirection.S;
 						//Console.WriteLine("Turn S at {0},{1}", newX, newY);
 					}
 					break;
-				case Direction.S:
+				case CardinalDirection.S:
 					++newY;
 					if (newY > grid.GetLength(1)) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
 					{
@@ -129,11 +129,11 @@ namespace Challenges
 					if (grid[newY + ZERO_INDEX_OFFSET, newX + ZERO_INDEX_OFFSET] == OBSTACLE)
 					{
 						--newY;
-						newDirection = Direction.W;
+						newDirection = CardinalDirection.W;
 						//Console.WriteLine("Turn W at {0},{1}", newX, newY);
 					}
 					break;
-				case Direction.W:
+				case CardinalDirection.W:
 					--newX;
 					if (newX == 0) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
 					{
@@ -143,7 +143,7 @@ namespace Challenges
 					if (grid[newY + ZERO_INDEX_OFFSET, newX + ZERO_INDEX_OFFSET] == OBSTACLE)
 					{
 						++newX;
-						newDirection = Direction.N;
+						newDirection = CardinalDirection.N;
 						//Console.WriteLine("Turn N at {0},{1}", newX, newY);
 					}
 					break;
@@ -159,7 +159,7 @@ namespace Challenges
 			// Note: full brute-force method took forever to run on this laptop!
 			int solution = 0;
 
-			Direction startingDirection = Direction.N;
+			CardinalDirection startingDirection = CardinalDirection.N;
 
 			var grid = GenerateNewPopulatedGrid(data);
 			MarkPath(grid, startX, startY, startingDirection);
@@ -308,19 +308,19 @@ namespace Challenges
 			}
 		}
 
-		private static bool PredictPathHavingNoInfiniteLoop(char[,] grid, int x, int y, Direction direction, List<Tuple<int, int, Direction>> happyPath)
+		private static bool PredictPathHavingNoInfiniteLoop(char[,] grid, int x, int y, CardinalDirection direction, List<Tuple<int, int, CardinalDirection>> happyPath)
 		{
 			int newX = x;
 			int newY = y;
-			Direction newDirection = direction;
+			CardinalDirection newDirection = direction;
 
 			grid[newY + ZERO_INDEX_OFFSET, newX + ZERO_INDEX_OFFSET] = ENROUTE;
-			happyPath.Add(new Tuple<int, int, Direction>(x, y, direction));
+			happyPath.Add(new Tuple<int, int, CardinalDirection>(x, y, direction));
 			//Console.WriteLine("{0},{1}", newX, newY);
 
 			switch (direction)
 			{
-				case Direction.N:
+				case CardinalDirection.N:
 					--newY;
 					if (newY == 0) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
 					{
@@ -330,11 +330,11 @@ namespace Challenges
 					if (grid[newY + ZERO_INDEX_OFFSET, newX + ZERO_INDEX_OFFSET] == OBSTACLE)
 					{
 						++newY;
-						newDirection = Direction.E;
+						newDirection = CardinalDirection.E;
 						//Console.WriteLine("Turn E at {0},{1}", newX, newY);
 					}
 					break;
-				case Direction.E:
+				case CardinalDirection.E:
 					++newX;
 					if (newX > grid.GetLength(0)) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
 					{
@@ -344,11 +344,11 @@ namespace Challenges
 					if (grid[newY + ZERO_INDEX_OFFSET, newX + ZERO_INDEX_OFFSET] == OBSTACLE)
 					{
 						--newX;
-						newDirection = Direction.S;
+						newDirection = CardinalDirection.S;
 						//Console.WriteLine("Turn S at {0},{1}", newX, newY);
 					}
 					break;
-				case Direction.S:
+				case CardinalDirection.S:
 					++newY;
 					if (newY > grid.GetLength(1)) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
 					{
@@ -358,11 +358,11 @@ namespace Challenges
 					if (grid[newY + ZERO_INDEX_OFFSET, newX + ZERO_INDEX_OFFSET] == OBSTACLE)
 					{
 						--newY;
-						newDirection = Direction.W;
+						newDirection = CardinalDirection.W;
 						//Console.WriteLine("Turn W at {0},{1}", newX, newY);
 					}
 					break;
-				case Direction.W:
+				case CardinalDirection.W:
 					--newX;
 					if (newX == 0) // I'm keep X and Y indexed to 1 to make it easy on my brain :D
 					{
@@ -372,13 +372,13 @@ namespace Challenges
 					if (grid[newY + ZERO_INDEX_OFFSET, newX + ZERO_INDEX_OFFSET] == OBSTACLE)
 					{
 						++newX;
-						newDirection = Direction.N;
+						newDirection = CardinalDirection.N;
 						//Console.WriteLine("Turn N at {0},{1}", newX, newY);
 					}
 					break;
 			}
 
-			var newVector = new Tuple<int, int, Direction>(newX, newY, newDirection);
+			var newVector = new Tuple<int, int, CardinalDirection>(newX, newY, newDirection);
 			if (happyPath.Contains(newVector))
 			{
 				return false; // The next location+direction has already been encountered, meaning that this is going to be an infinite loop
