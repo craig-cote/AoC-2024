@@ -5,7 +5,7 @@ namespace Challenges
 	// A Solved: 9:12am
 	// B solved: 9:21am
 
-	public class Day10
+	public class Day10 : Shared
 	{
 		private const string ExampleA1 = "...0...\r\n...1...\r\n...2...\r\n6543456\r\n7.....7\r\n8.....8\r\n9.....9";
 		private const string ExampleA2 = "..90..9\r\n...1.98\r\n...2..7\r\n6543456\r\n765.987\r\n876....\r\n987....";
@@ -16,8 +16,6 @@ namespace Challenges
 		private const string ExampleB2 = "..90..9\r\n...1.98\r\n...2..7\r\n6543456\r\n765.987\r\n876....\r\n987....";
 		private const string ExampleB3 = "012345\r\n123456\r\n234567\r\n345678\r\n4.6789\r\n56789.";
 		private const string ExampleB4 = "89010123\r\n78121874\r\n87430965\r\n96549874\r\n45678903\r\n32019012\r\n01329801\r\n10456732";
-
-		private const char EMPTY = '.';
 
 		[TestCase(ExampleA1, 2)]
 		[TestCase(ExampleA2, 4)]
@@ -117,12 +115,8 @@ namespace Challenges
 		{
 			List<Tuple<int, int>> surroundingCoordinates = [];
 
-//			surroundingCoordinates.Add(new Tuple<int, int>(currentLocation.Item1 - 1, currentLocation.Item2 - 1));
 			surroundingCoordinates.Add(new Tuple<int, int>(currentLocation.Item1 - 1, currentLocation.Item2));
-//			surroundingCoordinates.Add(new Tuple<int, int>(currentLocation.Item1 - 1, currentLocation.Item2 + 1));
-//			surroundingCoordinates.Add(new Tuple<int, int>(currentLocation.Item1 + 1, currentLocation.Item2 - 1));
 			surroundingCoordinates.Add(new Tuple<int, int>(currentLocation.Item1 + 1, currentLocation.Item2));
-//			surroundingCoordinates.Add(new Tuple<int, int>(currentLocation.Item1 + 1, currentLocation.Item2 + 1));
 			surroundingCoordinates.Add(new Tuple<int, int>(currentLocation.Item1, currentLocation.Item2 - 1));
 			surroundingCoordinates.Add(new Tuple<int, int>(currentLocation.Item1, currentLocation.Item2 + 1));
 
