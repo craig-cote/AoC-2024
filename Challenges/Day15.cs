@@ -23,12 +23,14 @@ namespace Challenges
 		private const char EAST = '>';
 		private const char SOUTH = 'v';
 		private const char WEST = '<';
+		private const char WIDE_BOX_LEFT = '[';
+		private const char WIDE_BOX_RIGHT = ']';
 
 		[TestCase(ExampleA1_Map, ExampleA1_Moves, 2028)]
 		[TestCase(ExampleA2_Map, ExampleA2_Moves, 10092)]
 		[TestCase(Data_Map, Data_Moves, 1438161)]
 		[Parallelizable]
-		public void QuestionA(string data,string movesString, int expected)
+		public void QuestionA(string data, string movesString, int expected)
 		{
 			var grid = GenerateNewPopulatedGrid(data);
 			WriteGrid(grid);
@@ -281,18 +283,97 @@ namespace Challenges
 			return gpses;
 		}
 
-		[TestCase(ExampleA1_Map, 0)]
-		//[TestCase(Data_Map, Data_Moves, 0)]
+		[TestCase(ExampleA2_Map, ExampleA2_Moves, 9021)]
+		[TestCase(Data_Map, Data_Moves, 0)]
 		[Parallelizable]
-		public void QuestionB(string data, int expected)
+		public void QuestionB(string data, string movesString, int expected)
 		{
-			int solution = 0;
-
 			var grid = GenerateNewPopulatedGrid(data);
 			WriteGrid(grid);
 
-			Console.WriteLine(solution);
-			Assert.That(solution, Is.EqualTo(expected));
+			grid = GenerateNewPopulatedWideGrid(data);
+			WriteGrid(grid);
+
+			CardinalDirection[] moves = GenerateMoves(movesString);
+			ExecuteMovesForWideGrid(grid, moves);
+
+			ConcurrentBag<int> gpses = CalculateGpsForeachWideBox(grid);
+
+			int gps = gpses.Sum(x => x);
+
+			Console.WriteLine(gps);
+			Assert.That(gps, Is.EqualTo(expected));
+		}
+
+		private static char[,] GenerateNewPopulatedWideGrid(string data)
+		{
+			string[] rows = data.Split("\r\n");
+			char[,] grid = InitializeWideGrid(rows);
+			PopulateWideGrid(grid, rows);
+
+			return grid;
+		}
+
+		private static char[,] InitializeWideGrid(string[] data)
+		{
+			int rows = data.Length;
+			int columns = data[0].Length * 2;
+
+			return new char[rows, columns];
+		}
+
+		private static void PopulateWideGrid(char[,] grid, string[] data)
+		{
+			for (int y = 0; y < data.Length; ++y)
+			{
+				for (int x = 0; x < data[0].Length; ++x)
+				{
+					switch (data[y][x])
+					{
+						case EMPTY:
+							grid[y, x * 2] = EMPTY;
+							grid[y, x * 2 + 1] = EMPTY;
+							break;
+						case WALL:
+							grid[y, x * 2] = WALL;
+							grid[y, x * 2 + 1] = WALL;
+							break;
+						case BOX:
+							grid[y, x * 2] = WIDE_BOX_LEFT;
+							grid[y, x * 2 + 1] = WIDE_BOX_RIGHT;
+							break;
+						case ROBOT:
+							grid[y, x * 2] = ROBOT;
+							grid[y, x * 2 + 1] = EMPTY;
+							break;
+					}
+				}
+			}
+		}
+
+		private static void ExecuteMovesForWideGrid(object grid, CardinalDirection[] moves)
+		{
+			// TODO
+			throw new NotImplementedException();
+		}
+
+		private static ConcurrentBag<int> CalculateGpsForeachWideBox(char[,] grid)
+		{
+			ConcurrentBag<int> gpses = [];
+
+			Parallel.For(0, grid.GetLength(0), y =>
+			{
+				Parallel.For(0, grid.GetLength(1), x =>
+				{
+					if (grid[y, x] == WIDE_BOX_RIGHT)
+					{
+						// TODO
+//						gpses.Add(100 * y + x);
+					}
+				});
+			});
+
+			return gpses;
 		}
 	}
 }
