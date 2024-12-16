@@ -5,7 +5,7 @@ namespace Challenges
 {
 	//    Start: 10:50pm
 	// A Solved: 11:53pm
-	// B solved: 00:00pm
+	// B solved: stoped at 12:24am
 
 	public class Day15 : Shared
 	{
