@@ -23,9 +23,31 @@
 		{
 			for (int y = 0; y < grid.GetLength(0); y++)
 			{
-				for (int x = 0; x < grid.GetLength(0); x++)
+				for (int x = 0; x < grid.GetLength(1); x++)
 				{
 					Console.Write(grid[y, x] + " ");
+				}
+
+				Console.WriteLine();
+			}
+
+			Console.WriteLine();
+		}
+
+		public static void WriteGrid(int[,] grid)
+		{
+			for (int y = 0; y < grid.GetLength(0); y++)
+			{
+				for (int x = 0; x < grid.GetLength(1); x++)
+				{
+					if (grid[y, x] != 0)
+					{
+						Console.Write(grid[y, x]);
+					}
+					else
+					{
+						Console.Write(EMPTY);
+					}
 				}
 
 				Console.WriteLine();
