@@ -67,13 +67,13 @@ namespace Challenges
 		[Parallelizable]
 		public void QuestionA(string data, int width, int height, int expected)
 		{
-			RobotMovementPredictor _predictor = new() { Width = width, Height = height };
+			RobotMovementPredictor predictor = new() { Width = width, Height = height };
 
 			List<RobotDetails> definitions = ParseDefinitions(data);
 
 			Parallel.For(0, definitions.Count, i =>
 			{
-				_predictor.PredictRobotMovement(definitions[i], 100);
+				predictor.PredictRobotMovement(definitions[i], 100);
 			});
 
 			var locations = new int[height, width];
@@ -125,11 +125,6 @@ namespace Challenges
 		private static int[] CountOfRobotsInQuadrants(int[,] robotsPerLocation)
 		{
 			List<int[,]> quadrants = ParseQuadrants(robotsPerLocation);
-			foreach (var quad in quadrants)
-			{
-				WriteGrid(quad);
-			}
-
 
 			int[] counts = new int[quadrants.Count];
 			for (int i = 0; i < quadrants.Count; ++i)
@@ -184,18 +179,50 @@ namespace Challenges
 			return countOfRobotsInQuadrant;
 		}
 
-		[TestCase(ExampleA1, 0)]
-		[TestCase(Data, 0), Ignore("Waiting for Example to pass before testing with puzzle input.")]
-		[Parallelizable]
-		public void QuestionB(string data, int expected)
+		[TestCase(Data, 101, 103, 218619120)]
+		public void QuestionB(string data, int width, int height, int expected)
 		{
-			int solution = 0;
+			RobotMovementPredictor predictor = new() { Width = width, Height = height };
 
-			var grid = GenerateNewPopulatedGrid(data);
-			WriteGrid(grid);
+			List<RobotDetails> definitions = ParseDefinitions(data);
 
-			Console.WriteLine(solution);
-			Assert.That(solution, Is.EqualTo(expected));
+			var locations = new int[height, width];
+			MapRobotsToLocations(locations, definitions);
+
+			//while top border does not exist, execut PredictRobotMovement.
+			int seconds = 0;
+			while (!GridHasTopBorder(locations))
+			{
+				AdvanceRobotsOneSecond(predictor, definitions);
+				++seconds;
+
+				MapRobotsToLocations(locations, definitions);
+			}
+
+			WriteGridWithRobots(locations);
+
+			Assert.That(seconds, Is.EqualTo(expected));
+		}
+
+		private static bool GridHasTopBorder(int[,] locations)
+		{
+			for (int i = 0; i < locations.GetLength(1); ++i)
+			{
+				if (locations[0, i] == 0)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		private static void AdvanceRobotsOneSecond(RobotMovementPredictor predictor, List<RobotDetails> definitions)
+		{
+			Parallel.For(0, definitions.Count, i =>
+			{
+				predictor.PredictRobotMovement(definitions[i], 1);
+			});
 		}
 	}
 }

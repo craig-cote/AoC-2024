@@ -56,6 +56,28 @@
 			Console.WriteLine();
 		}
 
+		public static void WriteGridWithRobots(int[,] grid)
+		{
+			for (int y = 0; y < grid.GetLength(0); y++)
+			{
+				for (int x = 0; x < grid.GetLength(1); x++)
+				{
+					if (grid[y, x] != 0)
+					{
+						Console.Write("*");
+					}
+					else
+					{
+						Console.Write(" ");
+					}
+				}
+
+				Console.WriteLine();
+			}
+
+			Console.WriteLine();
+		}
+
 		public static char[,] GenerateNewPopulatedGrid(string data)
 		{
 			string[] rows = data.Split("\r\n");
