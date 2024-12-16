@@ -138,49 +138,6 @@ namespace Challenges
 			return branches;
 		}
 
-		private static void WriteGrid(char[,] grid)
-		{
-			for (int y = 0; y < grid.GetLength(0); y++)
-			{
-				for (int x = 0; x < grid.GetLength(0); x++)
-				{
-					Console.Write(grid[y, x] + " ");
-				}
-
-				Console.WriteLine();
-			}
-
-			Console.WriteLine();
-		}
-
-		private static char[,] GenerateNewPopulatedGrid(string data)
-		{
-			string[] rows = data.Split("\r\n");
-			char[,] grid = InitializeGrid(rows);
-			PopulateGrid(grid, rows);
-
-			return grid;
-		}
-
-		private static char[,] InitializeGrid(string[] data)
-		{
-			int rows = data.Length;
-			int columns = data[0].Length;
-
-			return new char[columns, rows];
-		}
-
-		private static void PopulateGrid(char[,] grid, string[] data)
-		{
-			for (int y = 0; y < data.Length; ++y)
-			{
-				for (int x = 0; x < data[0].Length; ++x)
-				{
-					grid[y, x] = data[y][x];
-				}
-			}
-		}
-
 		[TestCase(ExampleB1, 3)]
 		[TestCase(ExampleB2, 13)]
 		[TestCase(ExampleB3, 227)]
