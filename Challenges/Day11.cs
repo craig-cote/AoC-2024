@@ -46,7 +46,6 @@ namespace Challenges
 			Parallel.For(0, stones.Count, i =>
 			{
 				transformationResults[i] = Transform(stones[i]);
-
 			});
 
 			var newStones = ApplyTransformations(transformationResults);
@@ -94,18 +93,18 @@ namespace Challenges
 			return newStones;
 		}
 
-		[TestCase(Example, 0)]
-		[TestCase(Data, 0), Ignore("Waiting for Example to pass before testing with puzzle input.")]
+		[TestCase(Data, 0)]
 		[Parallelizable]
 		public void QuestionB(string data, int expected)
 		{
-			int solution = 0;
+			List<long> stones = ParseStones(data);
+			for (int i = 0; i < 75; ++i)
+			{
+				stones = Blink(stones);
+			}
 
-			var grid = GenerateNewPopulatedGrid(data);
-			WriteGrid(grid);
-
-			Console.WriteLine(solution);
-			Assert.That(solution, Is.EqualTo(expected));
+			Console.WriteLine(stones.Count);
+			Assert.That(stones, Has.Count.EqualTo(expected));
 		}
 	}
 }
